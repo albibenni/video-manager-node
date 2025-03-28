@@ -77,8 +77,6 @@ export default tseslint.config(
       "vite.config.ts",
       "jest.config.ts",
       "eslint.config.js",
-      "*.spec.tsx",
-      "*.spec.ts",
       ".netlify",
       "pnpm-lock.yaml",
       "package-lock.json",

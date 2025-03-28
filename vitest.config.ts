@@ -1,8 +1,25 @@
 /// <reference types="vitest" />
 import { defineConfig } from "vitest/config";
 import { config } from "dotenv";
+import swc from "unplugin-swc";
+import { resolve } from "path";
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      src: resolve(__dirname, "./src"),
+    },
+  },
+  plugins: [
+    swc.vite({
+      module: { type: "es6" },
+      jsc: {
+        transform: {
+          useDefineForClassFields: false,
+        },
+      },
+    }),
+  ],
   test: {
     // globalSetup: "./src/__tests__/global.setup.ts",
     passWithNoTests: true,
@@ -17,11 +34,8 @@ export default defineConfig({
       all: false,
       provider: "istanbul",
       include: ["src/**"],
-      exclude: ["**/*.spec.ts"],
       reporter: ["json-summary", "html"],
     },
-    //include: ["**/*.spec.ts"],
-    exclude: ["**/*.spec.ts"],
     setupFiles: ["dotenv/config"],
     env: {
       ...config({ path: "./.env.local" }).parsed,
