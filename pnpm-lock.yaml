@@ -96,6 +96,9 @@ importers:
       typescript-eslint:
         specifier: ^8.20.0
         version: 8.28.0(eslint@9.23.0)(typescript@5.8.2)
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.8.2)(vite@6.2.3(@types/node@22.13.14)(terser@5.39.0))
       vitest:
         specifier: ^3.0.9
         version: 3.0.9(@types/node@22.13.14)(terser@5.39.0)
@@ -1871,6 +1874,9 @@ packages:
     resolution: {integrity: sha512-iInW14XItCXET01CQFqudPOWP2jYMl7T+QRQT+UNcR/iQncN/F0UNpgd76iFkBPgNQb4+X3LV9tLJYzwh+Gl3A==}
     engines: {node: '>=18'}
 
+  globrex@0.1.2:
+    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
+
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
@@ -2769,6 +2775,16 @@ packages:
       '@swc/wasm':
         optional: true
 
+  tsconfck@3.1.5:
+    resolution: {integrity: sha512-CLDfGgUp7XPswWnezWwsCRxNmgQjhYq3VXHM0/XIRxhVrKw0M1if9agzryh1QS3nxjCROvV+xWxoJO1YctzzWg==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+    peerDependencies:
+      typescript: ^5.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   tsconfig-paths-webpack-plugin@4.2.0:
     resolution: {integrity: sha512-zbem3rfRS8BgeNK50Zz5SIQgXzLafiHjOwUAvk/38/o1jHn/V5QAgVUcz884or7WYcPaH3N2CIfUc2u0ul7UcA==}
     engines: {node: '>=10.13.0'}
@@ -2865,6 +2881,14 @@ packages:
     resolution: {integrity: sha512-w3Gdx7jDcuT9cNn9jExXgOyKmf5UOTb6WMHz8LGAm54eS1Elf5OuBhCxl6zJxGhEeIkgsE1WbHuoL0mj/UXqXg==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
+
+  vite-tsconfig-paths@5.1.4:
+    resolution: {integrity: sha512-cYj0LRuLV2c2sMqhqhGpaO3LretdtMn/BVX4cPLanIZuwwrkVl+lK84E/miEXkCHWXuq65rhNN4rXsBcOB3S4w==}
+    peerDependencies:
+      vite: '*'
+    peerDependenciesMeta:
+      vite:
+        optional: true
 
   vite@6.2.3:
     resolution: {integrity: sha512-IzwM54g4y9JA/xAeBPNaDXiBF8Jsgl3VBQ2YQ/wOY6fyW3xMdSoltIV3Bo59DErdqdE6RxUfv8W69DvUorE4Eg==}
@@ -4829,6 +4853,8 @@ snapshots:
 
   globals@16.0.0: {}
 
+  globrex@0.1.2: {}
+
   gopd@1.2.0: {}
 
   got@13.0.0:
@@ -5675,6 +5701,10 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.11.13
 
+  tsconfck@3.1.5(typescript@5.8.2):
+    optionalDependencies:
+      typescript: 5.8.2
+
   tsconfig-paths-webpack-plugin@4.2.0:
     dependencies:
       chalk: 4.1.2
@@ -5778,6 +5808,17 @@ snapshots:
       - terser
       - tsx
       - yaml
+
+  vite-tsconfig-paths@5.1.4(typescript@5.8.2)(vite@6.2.3(@types/node@22.13.14)(terser@5.39.0)):
+    dependencies:
+      debug: 4.4.0
+      globrex: 0.1.2
+      tsconfck: 3.1.5(typescript@5.8.2)
+    optionalDependencies:
+      vite: 6.2.3(@types/node@22.13.14)(terser@5.39.0)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
 
   vite@6.2.3(@types/node@22.13.14)(terser@5.39.0):
     dependencies:

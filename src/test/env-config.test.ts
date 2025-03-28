@@ -1,5 +1,5 @@
 import { vi, describe, afterAll, beforeEach, it, expect } from "vitest";
-import config from "./env-config.js";
+import config from "../config/env-config.js";
 import dotenv from "dotenv";
 
 describe("file-ingestion", () => {
@@ -47,7 +47,7 @@ it("setupEnv should load .env.prod for production environment", async () => {
 
   // Re-import the module to trigger setupEnv
   vi.resetModules();
-  await import("./env-config.js");
+  await import("../config/env-config.js");
 
   expect(consoleSpy).toHaveBeenCalledWith("Environment is 'prod'");
 
@@ -62,7 +62,7 @@ it("setupEnv should load .env.dev for development environment", async () => {
 
   // Re-import the module to trigger setupEnv
   vi.resetModules();
-  await import("./env-config.js");
+  await import("../config/env-config.js");
 
   expect(consoleSpy).toHaveBeenCalledWith("Environment is 'development'");
 
@@ -78,7 +78,7 @@ it("setupEnv should load .env.local for local environment", async () => {
 
   // Re-import the module to trigger setupEnv
   vi.resetModules();
-  await import("./env-config.js");
+  await import("../config/env-config.js");
 
   expect(consoleSpy).toHaveBeenCalledWith("Environment is 'local'");
   expect(dotenvSpy).toHaveBeenCalledWith(
@@ -99,7 +99,7 @@ it("setupEnv should load .env for default environment", async () => {
 
   // Re-import the module to trigger setupEnv
   vi.resetModules();
-  await import("./env-config.js");
+  await import("../config/env-config.js");
 
   expect(consoleSpy).toHaveBeenCalledWith("Environment is 'default'");
   expect(dotenvSpy).toHaveBeenCalledWith(
