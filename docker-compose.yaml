@@ -1,0 +1,23 @@
+services:
+  ## Database
+  db:
+    container_name: postgres
+    image: postgres
+    restart: always
+    ports:
+      - 5431:5432
+    volumes:
+      - ./postgres-storage:/var/lib/postgresql/data
+    env_file: .env.local
+  ## S3 Service
+  minio:
+    container_name: minio
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./minio-storage:/data
+    command: server --console-address ":9001" /data
+    env_file: .env.local
+    restart: always
