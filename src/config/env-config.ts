@@ -2,7 +2,7 @@ import dotenv, { configDotenv } from "dotenv";
 import path, { resolve } from "path";
 
 function setupEnv() {
-  const basePath = import.meta.dirname;
+  const basePath = __dirname;
   switch (process.env.NODE_ENV) {
     case "prod":
       console.log("Environment is 'prod'");
