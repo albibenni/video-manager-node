@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Video } from "./entities/video.entity";
-import { VideoDto } from "./dto/video.dto";
+import { VideoDto, videoToVideoDto } from "./dto/video.dto";
 
 @Injectable()
 export class VideoService {
@@ -103,7 +103,7 @@ export class VideoService {
    * @throws NotFoundException - If the video with the given ID is not found
    * @returns A Promise that resolves to the found video
    */
-  async findByVideoTitle(title: string): Promise<Video> {
+  async findByVideoTitle(title: string): Promise<VideoDto> {
     //const video = await this.videoRepository.findOne({ where: {  } });
     const video = await this.videoRepository
       .createQueryBuilder("video")
@@ -123,9 +123,7 @@ export class VideoService {
    * @param createVideoDto - Data transfer object containing the video properties
    * @returns A Promise that resolves to the created video or undefined if an error occurs
    */
-  async create(
-    createVideoDto: Omit<Video, "id" | "createdAt" | "updatedAt">,
-  ): Promise<Video | undefined> {
+  async create(createVideoDto: VideoDto): Promise<Video | undefined> {
     try {
       const video = this.videoRepository.create(createVideoDto);
       return this.videoRepository.save(video);

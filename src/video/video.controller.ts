@@ -10,8 +10,7 @@ import {
   HttpStatus,
 } from "@nestjs/common";
 import { VideoService } from "./video.service";
-import { Video } from "./entities/video.entity";
-import { VideoDto } from "./dto/video.dto";
+import { VideoDto, videoToVideoDto } from "./dto/video.dto";
 
 @Controller("videos")
 export class VideoController {
@@ -28,45 +27,46 @@ export class VideoController {
   }
 
   @Get("all")
-  async findAll(): Promise<Video[]> {
-    //TODO: dto
-    return this.videoService.findAll();
+  async findAll(): Promise<VideoDto[]> {
+    const videos = await this.videoService.findAll();
+    return videos.map((video) => videoToVideoDto(video));
   }
 
   @Get(":id")
-  async findOne(@Param("id") id: string): Promise<Video> {
+  async findOne(@Param("id") id: string): Promise<VideoDto> {
     const video = await this.videoService.findOne(id);
     if (!video) {
       throw new Error("Video not found");
     }
-    return video;
+    return videoToVideoDto(video);
   }
 
   @Get("video/:title")
-  async findOneByTitle(@Param("title") title: string): Promise<Video> {
+  async findOneByTitle(@Param("title") title: string): Promise<VideoDto> {
     const video = await this.videoService.findOne(title);
     if (!video) {
       throw new Error("Video not found");
     }
-    return video;
+    return videoToVideoDto(video);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() video: VideoDto): Promise<Video | undefined> {
-    return this.videoService.create(video);
+  async create(@Body() video: VideoDto): Promise<VideoDto | undefined> {
+    const createdVideo = await this.videoService.create(video);
+    return createdVideo ? videoToVideoDto(createdVideo) : undefined;
   }
 
   @Patch(":id")
   async update(
     @Param("id") id: string,
     @Body() updateVideoDto: Partial<VideoDto>,
-  ): Promise<Video> {
+  ): Promise<VideoDto> {
     const video = await this.videoService.update(id, updateVideoDto);
     if (!video) {
       throw new Error("Video not found");
     }
-    return video;
+    return videoToVideoDto(video);
   }
 
   @Delete(":id")
