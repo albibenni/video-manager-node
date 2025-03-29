@@ -11,7 +11,7 @@ services:
     env_file: .env.local
   ## S3 Service
   minio:
-    container_name: minio
+    container_name: aws-copy
     image: minio/minio
     ports:
       - "9000:9000"
