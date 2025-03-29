@@ -33,14 +33,12 @@ setupEnv();
 
 const config = {
   db: {
-    user: process.env.POSTGRES_USER ?? "trigon",
+    user: process.env.POSTGRES_USER ?? "benni",
     password: process.env.POSTGRES_PASSWORD ?? "password",
     host: process.env.POSTGRES_HOST ?? "localhost",
-    port: parseInt(process.env.POSTGRES_PORT ?? "5431"),
-    database: process.env.POSTGRES_DB ?? "trigon",
-    url:
-      process.env.DB_URL ??
-      "postgresql://trigon:password@localhost:5431/trigon",
+    port: parseInt(process.env.POSTGRES_PORT ?? "5432"),
+    database: process.env.POSTGRES_DB ?? "video",
+    url: process.env.DB_URL ?? 5432,
   },
   minio: {
     root_user: process.env.MINIO_ROOT_USER ?? "admin",
