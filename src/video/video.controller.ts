@@ -22,7 +22,12 @@ export class VideoController {
     return this.videoService.populate();
   }
 
-  @Get()
+  @Delete("drop")
+  async drop(): Promise<void> {
+    return this.videoService.dropAll();
+  }
+
+  @Get("all")
   async findAll(): Promise<Video[]> {
     //TODO: dto
     return this.videoService.findAll();

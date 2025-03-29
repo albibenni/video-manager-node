@@ -63,6 +63,15 @@ export class VideoService {
 
     console.log(`Database populated with ${createdVideos.length} videos`);
   }
+
+  async dropAll(): Promise<void> {
+    await this.videoRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Video)
+      .execute();
+  }
+
   /**
    * Retrieves all videos from the database
    *
