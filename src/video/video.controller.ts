@@ -11,11 +11,16 @@ import {
 } from "@nestjs/common";
 import { VideoService } from "./video.service";
 import { Video } from "./entities/video.entity";
-import { CreateVideoDto, UpdateVideoDto } from "./dto/video";
+import { VideoDto } from "./dto/video.dto";
 
 @Controller("videos")
 export class VideoController {
   constructor(private readonly videoService: VideoService) {}
+
+  @Post("populate")
+  async populate(): Promise<void> {
+    return this.videoService.populate();
+  }
 
   @Get()
   async findAll(): Promise<Video[]> {
@@ -32,18 +37,25 @@ export class VideoController {
     return video;
   }
 
+  @Get("video/:title")
+  async findOneByTitle(@Param("title") title: string): Promise<Video> {
+    const video = await this.videoService.findOne(title);
+    if (!video) {
+      throw new Error("Video not found");
+    }
+    return video;
+  }
+
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(
-    @Body() createVideoDto: CreateVideoDto,
-  ): Promise<Video | undefined> {
-    return this.videoService.create(createVideoDto);
+  async create(@Body() video: VideoDto): Promise<Video | undefined> {
+    return this.videoService.create(video);
   }
 
   @Patch(":id")
   async update(
     @Param("id") id: string,
-    @Body() updateVideoDto: Partial<UpdateVideoDto>,
+    @Body() updateVideoDto: Partial<VideoDto>,
   ): Promise<Video> {
     const video = await this.videoService.update(id, updateVideoDto);
     if (!video) {

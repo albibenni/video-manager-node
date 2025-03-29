@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Video } from "./entities/video.entity";
-import { UpdateVideoDto } from "./dto/video";
+import { VideoDto } from "./dto/video.dto";
 
 @Injectable()
 export class VideoService {
@@ -11,6 +11,58 @@ export class VideoService {
     private videoRepository: Repository<Video>,
   ) {}
 
+  /**
+   * Populates the database with sample video data
+   *
+   * This method clears any existing videos in the database and adds
+   * a set of predefined sample videos. It's useful for testing and
+   * development purposes.
+   *
+   * @returns A Promise that resolves when the population is complete
+   */
+  async populate(): Promise<void> {
+    // Sample video data for populating the database
+    const sampleVideos: VideoDto[] = [
+      {
+        title: "Introduction to NestJS",
+        description: "Learn the basics of NestJS framework",
+        url: "https://example.com/nestjs-intro",
+      },
+      {
+        title: "TypeORM Tutorial",
+        description: "Complete guide to using TypeORM with NestJS",
+        url: "https://example.com/typeorm-tutorial",
+      },
+      {
+        title: "Building RESTful APIs",
+        description: "How to build RESTful APIs with NestJS",
+        url: "https://example.com/restful-apis",
+      },
+      {
+        title: "Authentication in NestJS",
+        description: "Implementing authentication in your NestJS application",
+        url: "https://example.com/nestjs-auth",
+      },
+      {
+        title: "Testing NestJS Applications",
+        description: "Best practices for testing NestJS applications",
+        url: "https://example.com/nestjs-testing",
+      },
+    ];
+
+    // Clear existing videos (optional)
+    await this.videoRepository.clear();
+
+    // Create and save each video
+    const createdVideos: Video[] = [];
+    for (const videoData of sampleVideos) {
+      const video = this.videoRepository.create(videoData);
+      const savedVideo = await this.videoRepository.save(video);
+      createdVideos.push(savedVideo);
+    }
+
+    console.log(`Database populated with ${createdVideos.length} videos`);
+  }
   /**
    * Retrieves all videos from the database
    *
@@ -35,6 +87,27 @@ export class VideoService {
     return video;
   }
 
+  /**
+   * Finds a video in the database by its ID
+   *
+   * @param id - The unique identifier of the video to find
+   * @throws NotFoundException - If the video with the given ID is not found
+   * @returns A Promise that resolves to the found video
+   */
+  async findByVideoTitle(title: string): Promise<Video> {
+    //const video = await this.videoRepository.findOne({ where: {  } });
+    const video = await this.videoRepository
+      .createQueryBuilder("video")
+      .where("video.title = :title")
+      .setParameter(title, title)
+      .getOne();
+    if (!video) {
+      throw new NotFoundException(`Video with title ${title} not found`);
+    }
+    console.log("Testing query builder");
+
+    return video;
+  }
   /**
    * Creates a new video in the database
    *
@@ -62,7 +135,7 @@ export class VideoService {
    */
   async update(
     id: string,
-    updateVideoDto: Partial<UpdateVideoDto>,
+    updateVideoDto: Partial<VideoDto>,
   ): Promise<Video | undefined> {
     try {
       const video = await this.findOne(id);

@@ -4,9 +4,11 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  Unique,
 } from "typeorm";
 
 @Entity("videos")
+@Unique(["title"])
 export class Video {
   @PrimaryGeneratedColumn("uuid")
   id: string;
