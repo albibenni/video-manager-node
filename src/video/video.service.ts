@@ -104,15 +104,15 @@ export class VideoService {
    * @returns A Promise that resolves to the found video
    */
   async findByVideoTitle(title: string): Promise<Video> {
-    const video = await this.videoRepository.find({
+    const videos = await this.videoRepository.find({
       where: { title: title },
       take: 1,
       cache: true,
     });
-    if (!video || video.length === 0) {
+    if (!videos || videos.length === 0) {
       throw new NotFoundException(`Video with title ${title} not found`);
     }
-    return video[0];
+    return videos[0];
   }
   /**
    * Creates a new video in the database

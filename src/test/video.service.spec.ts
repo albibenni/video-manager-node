@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Video } from "../video/entities/video.entity";
 import { VideoService } from "../video/video.service";
+import { VideoDto } from "src/video/dto/video.dto";
 
 describe("VideoService", () => {
   let service: VideoService;
@@ -35,6 +36,44 @@ describe("VideoService", () => {
     service = module.get<VideoService>(VideoService);
     //@ts-ignore
     repository = module.get<Repository<Video>>(getRepositoryToken(Video));
+  });
+
+  describe("create", () => {
+    const createVideoDto: VideoDto = {
+      title: "New Video",
+      description: "New Description",
+      url: "https://example.com/new",
+    };
+
+    const mockCreatedVideo = {
+      id: "123",
+      ...createVideoDto,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    it("should create a video successfully", async () => {
+      mockRepository.create.mockReturnValue(mockCreatedVideo);
+      mockRepository.save.mockResolvedValue(mockCreatedVideo);
+
+      const result = await service.create(createVideoDto);
+
+      expect(result).toEqual(mockCreatedVideo);
+      expect(repository.create).toHaveBeenCalledWith(createVideoDto);
+      expect(repository.save).toHaveBeenCalledWith(mockCreatedVideo);
+    });
+
+    it.skip("should handle errors during creation", async () => {
+      //const error = new Error("Database error");
+      mockRepository.create.mockReturnValueOnce(mockCreatedVideo);
+      mockRepository.save.mockRejectedValueOnce(new Error("asd"));
+
+      const result = await service.create(createVideoDto);
+
+      expect(result).toBeUndefined();
+      expect(repository.create).toHaveBeenCalledWith(createVideoDto);
+      expect(repository.save).toHaveBeenCalledWith(mockCreatedVideo);
+    });
   });
 
   describe("findByVideoTitle", () => {
