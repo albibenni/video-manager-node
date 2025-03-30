@@ -103,19 +103,16 @@ export class VideoService {
    * @throws NotFoundException - If the video with the given ID is not found
    * @returns A Promise that resolves to the found video
    */
-  async findByVideoTitle(title: string): Promise<VideoDto> {
-    //const video = await this.videoRepository.findOne({ where: {  } });
-    const video = await this.videoRepository
-      .createQueryBuilder("video")
-      .where("video.title = :title")
-      .setParameter(title, title)
-      .getOne();
+  async findByVideoTitle(title: string): Promise<Video> {
+    const video = await this.videoRepository.find({
+      where: { title: title },
+      take: 1,
+      cache: true,
+    });
     if (!video) {
       throw new NotFoundException(`Video with title ${title} not found`);
     }
-    console.log("Testing query builder");
-
-    return video;
+    return video[0];
   }
   /**
    * Creates a new video in the database

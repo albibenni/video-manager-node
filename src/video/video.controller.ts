@@ -43,7 +43,7 @@ export class VideoController {
 
   @Get("video/:title")
   async findOneByTitle(@Param("title") title: string): Promise<VideoDto> {
-    const video = await this.videoService.findOne(title);
+    const video = await this.videoService.findByVideoTitle(title);
     if (!video) {
       throw new Error("Video not found");
     }
