@@ -99,7 +99,7 @@ export class VideoService {
   /**
    * Finds a video in the database by its ID
    *
-   * @param id - The unique identifier of the video to find
+   * @param title - The title, unique identifier, of the video to find
    * @throws NotFoundException - If the video with the given ID is not found
    * @returns A Promise that resolves to the found video
    */
@@ -109,7 +109,7 @@ export class VideoService {
       take: 1,
       cache: true,
     });
-    if (!video) {
+    if (!video || video.length === 0) {
       throw new NotFoundException(`Video with title ${title} not found`);
     }
     return video[0];
