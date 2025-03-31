@@ -10,20 +10,20 @@ import {
 } from "typeorm";
 import { Video } from "../../video/entities/video.entity";
 
-@Entity()
-@Unique(["title"])
+@Entity("playlists")
+@Unique(["name"])
 export class Playlist {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
-  title: string;
+  name: string;
 
   @Column({ nullable: true })
   description: string;
 
-  @ManyToMany(() => Video, (video) => video.playlists, {
-    cascade: true,
+  @ManyToMany(() => Video, {
+    //cascade: true,
   })
   @JoinTable({
     name: "playlist_videos",
