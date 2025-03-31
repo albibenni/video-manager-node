@@ -27,26 +27,31 @@ export class VideoService {
         title: "Introduction to NestJS",
         description: "Learn the basics of NestJS framework",
         url: "https://example.com/nestjs-intro",
+        playlists: [],
       },
       {
         title: "TypeORM Tutorial",
         description: "Complete guide to using TypeORM with NestJS",
         url: "https://example.com/typeorm-tutorial",
+        playlists: [],
       },
       {
         title: "Building RESTful APIs",
         description: "How to build RESTful APIs with NestJS",
         url: "https://example.com/restful-apis",
+        playlists: [],
       },
       {
         title: "Authentication in NestJS",
         description: "Implementing authentication in your NestJS application",
         url: "https://example.com/nestjs-auth",
+        playlists: [],
       },
       {
         title: "Testing NestJS Applications",
         description: "Best practices for testing NestJS applications",
         url: "https://example.com/nestjs-testing",
+        playlists: [],
       },
     ];
 

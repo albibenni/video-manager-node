@@ -43,6 +43,7 @@ describe("VideoService", () => {
       title: "New Video",
       description: "New Description",
       url: "https://example.com/new",
+      playlists: [],
     };
 
     const mockCreatedVideo = {
