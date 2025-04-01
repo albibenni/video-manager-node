@@ -10,7 +10,7 @@ import {
   HttpStatus,
 } from "@nestjs/common";
 import { PlaylistService } from "./playlist.service";
-import { PlaylistDto } from "./dto/playlist.dto";
+import { PlaylistDto, playlistToPlaylistDto } from "./dto/playlist.dto";
 
 @Controller("playlists")
 export class PlaylistController {
@@ -22,7 +22,7 @@ export class PlaylistController {
     await this.playlistService.populatePlaylist();
   }
 
-  @Post()
+  @Post("create")
   async create(@Body() createPlaylistDto: PlaylistDto): Promise<PlaylistDto> {
     return this.playlistService.create(createPlaylistDto);
   }

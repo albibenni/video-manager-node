@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import { Playlist } from "../playlist/entities/playlist.entity";
 import { VideoService } from "../video/video.service";
 import { PlaylistDto } from "../playlist/dto/playlist.dto";
+import { sleep } from "src/utils/utils";
 
 @Injectable()
 export class PlaylistService {
@@ -20,6 +21,7 @@ export class PlaylistService {
       .delete()
       .from(Playlist)
       .execute();
+    await sleep(10);
 
     // Sample playlist data
     const samplePlaylists: PlaylistDto[] = [
@@ -53,6 +55,8 @@ export class PlaylistService {
     // Create and save each playlist
     for (const playlistData of samplePlaylists) {
       const playlist = await this.create(playlistData);
+      if (!playlist)
+        throw new Error(`Error creating playlist: ${playlistData.name}`);
       console.log(`Created playlist: ${playlist.name}`);
     }
 

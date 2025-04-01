@@ -1,0 +1,18 @@
+meta {
+  name: create playlist
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:8080/api/playlists/create
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "test",
+    "description": "a description"
+  }
+}
