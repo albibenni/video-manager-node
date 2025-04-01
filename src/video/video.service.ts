@@ -55,8 +55,12 @@ export class VideoService {
       },
     ];
 
-    // Clear existing videos (optional)
-    await this.videoRepository.clear();
+    // Delete existing videos (this will handle the foreign key constraints properly)
+    await this.videoRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Video)
+      .execute();
 
     // Create and save each video
     const createdVideos: Video[] = [];
