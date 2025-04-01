@@ -63,7 +63,7 @@ export class PlaylistController {
   }
 
   @Delete("/videos/remove-from-playlist")
-  async removeVideo(
+  async removeVideoFromPlaylist(
     @Body() removeVideoFromPlaylistDto: AddAndRemovePlaylistDto,
   ): Promise<PlaylistDto> {
     return this.playlistService.removeVideoFromPlaylist(
