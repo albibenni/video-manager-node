@@ -8,9 +8,10 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Put,
 } from "@nestjs/common";
 import { PlaylistService } from "./playlist.service";
-import { PlaylistDto, playlistToPlaylistDto } from "./dto/playlist.dto";
+import { PlaylistDto, AddAndRemovePlaylistDto } from "./dto/playlist.dto";
 
 @Controller("playlists")
 export class PlaylistController {
@@ -51,19 +52,23 @@ export class PlaylistController {
     await this.playlistService.remove(id);
   }
 
-  @Post(":id/videos/:videoId")
-  async addVideo(
-    @Param("id") id: string,
-    @Param("videoId") videoId: string,
+  @Put("/videos/add-to-playlist")
+  async addVideoToPlaylist(
+    @Body() addVideoToPlaylistDto: AddAndRemovePlaylistDto,
   ): Promise<PlaylistDto> {
-    return this.playlistService.addVideo(id, videoId);
+    return this.playlistService.addVideoToPlaylist(
+      addVideoToPlaylistDto.playlistName,
+      addVideoToPlaylistDto.videoTitle,
+    );
   }
 
-  @Delete(":id/videos/:videoId")
+  @Delete("/videos/remove-from-playlist")
   async removeVideo(
-    @Param("id") id: string,
-    @Param("videoId") videoId: string,
+    @Body() removeVideoFromPlaylistDto: AddAndRemovePlaylistDto,
   ): Promise<PlaylistDto> {
-    return this.playlistService.removeVideo(id, videoId);
+    return this.playlistService.removeVideoFromPlaylist(
+      removeVideoFromPlaylistDto.playlistName,
+      removeVideoFromPlaylistDto.videoTitle,
+    );
   }
 }

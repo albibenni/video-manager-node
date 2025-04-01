@@ -68,8 +68,9 @@ export class PlaylistService {
       name: createPlaylistDto.name,
       description: createPlaylistDto.description,
     });
+    console.log("here");
 
-    if (createPlaylistDto.videos.length) {
+    if (createPlaylistDto.videos?.length) {
       const videos = await Promise.all(
         createPlaylistDto.videos.map((video) =>
           this.videoService.findOne(video.id),
@@ -131,9 +132,21 @@ export class PlaylistService {
     await this.playlistRepository.remove(playlist);
   }
 
-  async addVideo(id: string, videoId: string): Promise<Playlist> {
-    const playlist = await this.findOne(id);
-    const video = await this.videoService.findOne(videoId);
+  async findByPlaylistName(playlistName: string): Promise<Playlist> {
+    const playlist = await this.playlistRepository.findOne({
+      where: { name: playlistName },
+      relations: ["videos"],
+    });
+    if (!playlist) throw new Error("Playlist not found");
+    return playlist;
+  }
+
+  async addVideoToPlaylist(
+    playlistName: string,
+    videoTitle: string,
+  ): Promise<Playlist> {
+    const playlist = await this.findByPlaylistName(playlistName);
+    const video = await this.videoService.findByVideoTitle(videoTitle);
 
     if (!playlist.videos) {
       playlist.videos = [];
@@ -143,9 +156,16 @@ export class PlaylistService {
     return this.playlistRepository.save(playlist);
   }
 
-  async removeVideo(id: string, videoId: string): Promise<Playlist> {
-    const playlist = await this.findOne(id);
-    playlist.videos = playlist.videos.filter((video) => video.id !== videoId);
+  async removeVideoFromPlaylist(
+    playlistName: string,
+    videoTitle: string,
+  ): Promise<Playlist> {
+    const playlist = await this.findByPlaylistName(playlistName);
+    console.log(playlist);
+    if (playlist.videos?.length == 0) throw new Error("Videos not found");
+    playlist.videos = playlist.videos.filter(
+      (video) => video.title !== videoTitle,
+    );
     return this.playlistRepository.save(playlist);
   }
 }
