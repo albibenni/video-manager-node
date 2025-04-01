@@ -1,3 +1,4 @@
+import { Playlist } from "src/playlist/entities/playlist.entity";
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -5,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Unique,
+  ManyToMany,
 } from "typeorm";
 
 @Entity("videos")
@@ -22,10 +24,8 @@ export class Video {
   @Column()
   url: string;
 
-  // @ManyToMany(() => Playlist, (playlist) => playlist.videos, {
-  //   cascade: true,
-  // })
-  // playlists: Playlist[];
+  @ManyToMany(() => Playlist, (playlist) => playlist.videos)
+  playlists: Playlist[];
 
   @CreateDateColumn()
   createdAt: Date;

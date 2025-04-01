@@ -7,5 +7,6 @@ export function videoToVideoDto(video: Video): VideoDto {
     title: video.title,
     description: video.description,
     url: video.url,
+    playlists: video.playlists,
   };
 }

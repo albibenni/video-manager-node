@@ -22,8 +22,8 @@ export class Playlist {
   @Column({ nullable: true })
   description: string;
 
-  @ManyToMany(() => Video, {
-    //cascade: true,
+  @ManyToMany(() => Video, (video) => video.playlists, {
+    cascade: true,
   })
   @JoinTable({
     name: "playlist_videos",
