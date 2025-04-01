@@ -1,0 +1,18 @@
+meta {
+  name: add video to playlist
+  type: http
+  seq: 7
+}
+
+put {
+  url: http://localhost:8080/api/playlists/videos/add-to-playlist
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "playlistName": "test",
+    "videoTitle": "Introduction to NestJS"
+  }
+}

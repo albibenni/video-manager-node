@@ -1,0 +1,18 @@
+meta {
+  name: remove video from playlist
+  type: http
+  seq: 6
+}
+
+delete {
+  url: http://localhost:8080/api/playlists/videos/remove-from-playlist
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "playlistName": "test",
+    "videoTitle": "Introduction to NestJS"
+  }
+}
