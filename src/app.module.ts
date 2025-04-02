@@ -11,6 +11,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 import { PlaylistModule } from "./playlist/playlist.module";
 import { Playlist } from "./playlist/entities/playlist.entity";
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { Playlist } from "./playlist/entities/playlist.entity";
     }),
     VideoModule,
     PlaylistModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
