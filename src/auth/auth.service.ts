@@ -2,9 +2,11 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { UserService } from "src/user/user.service";
-import bcrypt from "bcrypt";
 import { UserDto } from "src/user/dto/create-user.dto";
+import { promisify } from "util";
+import { randomBytes, scrypt } from "crypto";
 
+const scryptAsync = promisify(scrypt);
 @Injectable()
 export class AuthService {
   constructor(
@@ -24,21 +26,27 @@ export class AuthService {
     return null;
   }
 
-  async login(username: string, password: string) {
-    const user = await this.userService.findByUsername(username);
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new Error("Wrong Credentials");
-    }
-    const payload = { username: user.username, sub: user.id };
-    return {
-      access_token: this.jwtService.sign(payload),
-      expires_in: "1d",
-    };
-  }
+  // async login(username: string, password: string) {
+  //   const user = await this.userService.findByUsername(username);
+  //   if (!user || !(await compare(password, user.password))) {
+  //     throw new Error("Wrong Credentials");
+  //   }
+  //   const payload = { username: user.username, sub: user.id };
+  //   return {
+  //     access_token: this.jwtService.sign(payload),
+  //     expires_in: "1d",
+  //   };
+  // }
 
   async signup(user: UserDto) {
     try {
-      return await this.userService.create(user);
+      const salt = randomBytes(9).toString("hex");
+      const buffHash = (await scryptAsync(user.password, salt, 64)) as Buffer;
+      const newUser = {
+        ...user,
+        password: `${salt}.${buffHash.toString("hex")}`,
+      };
+      return await this.userService.create(newUser);
     } catch (e: any) {
       console.log(e.message);
     }

@@ -1,12 +1,12 @@
+//import { hash } from "bcrypt";
 import {
-  Entity,
-  PrimaryGeneratedColumn,
+  BeforeInsert,
   Column,
   CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
-  BeforeInsert,
 } from "typeorm";
-import bcrypt from "bcrypt";
 
 @Entity("users")
 export class User {
@@ -31,10 +31,19 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @BeforeInsert()
-  async hashPassword() {
-    if (this.password) {
-      this.password = await bcrypt.hash(this.password, 10);
-    }
-  }
+  // @BeforeInsert()
+  // async hashPassword() {
+  //   if (this.password) {
+  //     //const hashed = await scrypt(this.password, salt, 32);
+  //     // const genHashed = pbkdf2Sync(
+  //     //   this.password,
+  //     //   salt,
+  //     //   10000,
+  //     //   64,
+  //     //   "sha512",
+  //     // ).toString("hex");
+
+  //     //this.password = await hash(this.password, 10);
+  //   }
+  // }
 }
