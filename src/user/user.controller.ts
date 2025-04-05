@@ -20,8 +20,13 @@ export class UserController {
   ) {}
 
   @Post("signup")
-  signup(@Body() createUserDto: UserDto) {
-    return this.authService.signup(createUserDto);
+  signup(@Body() body: UserDto) {
+    return this.authService.signup(body);
+  }
+
+  @Post("signin")
+  signin(@Body() body: Pick<UserDto, "username" | "password">) {
+    return this.authService.signIn(body.username, body.password);
   }
 
   @UseGuards(JwtAuthGuard)

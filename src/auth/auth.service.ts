@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "src/user/user.service";
 import { UserDto } from "src/user/dto/create-user.dto";
@@ -31,8 +36,13 @@ export class AuthService {
   ): Promise<{ access_token: string }> {
     const user = await this.userService.findByUsername(username);
     //if (!user || !(await compare(password, user.password))) {
-    if (!user || user.password !== password) {
-      throw new Error("Wrong Credentials");
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+    const [salt, storedHash] = user.password.split(".");
+    const inputPasswordHash = (await scryptAsync(password, salt, 64)) as Buffer;
+    if (storedHash !== inputPasswordHash.toString("hex")) {
+      throw new BadRequestException("Wrong Credentials");
     }
     const payload = { username: user.username, sub: user.id };
     return {
