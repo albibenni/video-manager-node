@@ -39,6 +39,7 @@ describe("parseImageFromResponse", () => {
     expect(result).toBe(mockArrayBuffer);
 
     // Verify arrayBuffer method was called once
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(mockResponse.arrayBuffer).toHaveBeenCalledTimes(1);
   });
 

@@ -1,4 +1,4 @@
-import { Playlist } from "../entities/playlist.entity";
+import type { Playlist } from "../entities/playlist.entity";
 
 export type PlaylistDto = Omit<Playlist, "id" | "createdAt" | "updatedAt">;
 

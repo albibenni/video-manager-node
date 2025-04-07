@@ -7,7 +7,7 @@ describe("file-ingestion", () => {
   });
   afterAll(() => {});
 
-  it("env postgres", async () => {
+  it("env postgres", () => {
     const POSTGRES_USER = "benni";
     const POSTGRES_PASSWORD = "password";
     const POSTGRES_DB = "video";
@@ -24,7 +24,7 @@ describe("file-ingestion", () => {
     expect(hostP).toBe(POSTGRES_HOST);
     expect(portP).toBe(POSTGRES_PORT);
   });
-  it("env minio", async () => {
+  it("env minio", () => {
     const MINIO_ROOT_USER = "admin";
     const MINIO_ROOT_PASSWORD = "password";
     const rootUserP = process.env.MINIO_ROOT_USER;
@@ -33,7 +33,7 @@ describe("file-ingestion", () => {
     expect(rootUserP).toBe(MINIO_ROOT_USER);
     expect(rootPassP).toBe(MINIO_ROOT_PASSWORD);
   });
-  it("env aws", async () => {
+  it("env aws", () => {
     const AWS_ACCESS_KEY = "localAccessKey";
     const AWS_SECRET_ACCESS_KEY = "localSecretKey";
     const AWS_S3_BUCKET = "my-bucket";

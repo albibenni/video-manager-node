@@ -155,6 +155,7 @@ describe("parseStream", () => {
     try {
       await parseStream(stream);
     } catch (e: any) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(e.message).toBe("Stream error");
     }
   });
@@ -218,7 +219,7 @@ describe("getUUID", () => {
     );
   });
 
-  it("should generate unique UUIDs", async () => {
+  it("should generate unique UUIDs", () => {
     const uuids = new Set();
     for (let i = 0; i < 1000; i++) {
       uuids.add(getUUID());
@@ -232,7 +233,7 @@ describe("getUUID", () => {
     expect(["8", "9", "a", "b"].includes(uuid.charAt(19))).toBeTruthy();
   });
 
-  it("should handle multiple sequential calls", async () => {
+  it("should handle multiple sequential calls", () => {
     const uuid1 = getUUID();
     const uuid2 = getUUID();
     const uuid3 = getUUID();

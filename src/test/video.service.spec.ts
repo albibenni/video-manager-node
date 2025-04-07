@@ -1,11 +1,12 @@
 import { NotFoundException } from "@nestjs/common";
-import { Test, TestingModule } from "@nestjs/testing";
+import type { TestingModule } from "@nestjs/testing";
+import { Test } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import type { Repository } from "typeorm";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Video } from "../video/entities/video.entity";
 import { VideoService } from "../video/video.service";
-import { VideoDto } from "src/video/dto/video.dto";
+import type { VideoDto } from "src/video/dto/video.dto";
 
 describe("VideoService", () => {
   let service: VideoService;
@@ -32,9 +33,7 @@ describe("VideoService", () => {
       ],
     }).compile();
 
-    //@ts-ignore
     service = module.get<VideoService>(VideoService);
-    //@ts-ignore
     repository = module.get<Repository<Video>>(getRepositoryToken(Video));
   });
 
@@ -60,7 +59,9 @@ describe("VideoService", () => {
       const result = await service.create(createVideoDto);
 
       expect(result).toEqual(mockCreatedVideo);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(repository.create).toHaveBeenCalledWith(createVideoDto);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(repository.save).toHaveBeenCalledWith(mockCreatedVideo);
     });
 
@@ -72,7 +73,9 @@ describe("VideoService", () => {
       const result = await service.create(createVideoDto);
 
       expect(result).toBeUndefined();
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(repository.create).toHaveBeenCalledWith(createVideoDto);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(repository.save).toHaveBeenCalledWith(mockCreatedVideo);
     });
   });
@@ -93,6 +96,7 @@ describe("VideoService", () => {
       const result = await service.findByVideoTitle("Test Video");
 
       expect(result).toEqual(mockVideo);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(repository.find).toHaveBeenCalledWith({
         where: { title: "Test Video" },
         take: 1,
@@ -106,6 +110,7 @@ describe("VideoService", () => {
       await expect(
         service.findByVideoTitle("Non-existent Video"),
       ).rejects.toThrow(NotFoundException);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(repository.find).toHaveBeenCalledWith({
         where: { title: "Non-existent Video" },
         take: 1,

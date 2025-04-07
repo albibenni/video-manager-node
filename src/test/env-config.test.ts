@@ -9,7 +9,7 @@ describe("file-ingestion", () => {
   });
   afterAll(() => {});
 
-  it("env config db", async () => {
+  it("env config db", () => {
     expect(process.env.POSTGRES_USER).toBe(config.db.user);
     expect(process.env.POSTGRES_PASSWORD).toBe(config.db.password);
     expect(process.env.POSTGRES_DB).toBe(config.db.database);
@@ -18,7 +18,7 @@ describe("file-ingestion", () => {
     expect(process.env.DB_URL).toBe(config.db.url);
   });
 
-  it("env config minio", async () => {
+  it("env config minio", () => {
     expect(process.env.MINIO_ROOT_USER).toBe(config.minio.root_user);
     expect(process.env.MINIO_ROOT_PASSWORD).toBe(config.minio.root_password);
     expect(process.env.MINIO_PORT).toBe(config.minio.port.toString());
@@ -27,7 +27,7 @@ describe("file-ingestion", () => {
     );
   });
 
-  it("env config aws", async () => {
+  it("env config aws", () => {
     expect(process.env.AWS_ENDPOINT).toBe(config.aws.endpoint);
     expect(process.env.AWS_S3_BUCKET).toBe(config.aws.bucket);
     //expect(process.env.AWS_REGION).toBe(config.aws.region);
@@ -83,6 +83,7 @@ it("setupEnv should load .env.local for local environment", async () => {
   expect(consoleSpy).toHaveBeenCalledWith("Environment is 'local'");
   expect(dotenvSpy).toHaveBeenCalledWith(
     expect.objectContaining({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       path: expect.stringContaining(".env.local"),
     }),
   );
@@ -104,6 +105,7 @@ it("setupEnv should load .env for default environment", async () => {
   expect(consoleSpy).toHaveBeenCalledWith("Environment is 'default'");
   expect(dotenvSpy).toHaveBeenCalledWith(
     expect.objectContaining({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       path: expect.stringContaining(".env.local"),
     }),
   );
