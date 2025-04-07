@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "src/user/user.service";
 import { UserDto } from "src/user/dto/create-user.dto";
@@ -18,18 +22,26 @@ export class AuthService {
   async signIn(
     username: string,
     password: string,
-  ): Promise<{ access_token: string }> {
-    const user = await this.userService.findByUsername(username);
-    const [salt, storedHash] = user.password.split(".");
-    const inputPasswordHash = (await scryptAsync(password, salt, 64)) as Buffer;
-    if (storedHash !== inputPasswordHash.toString("hex")) {
-      throw new BadRequestException("Wrong Credentials");
+  ): Promise<{ access_token: string } | undefined> {
+    try {
+      const user = await this.userService.findByUsername(username);
+      const [salt, storedHash] = user.password.split(".");
+      const inputPasswordHash = (await scryptAsync(
+        password,
+        salt,
+        64,
+      )) as Buffer;
+      if (storedHash !== inputPasswordHash.toString("hex")) {
+        throw new BadRequestException("Wrong Credentials");
+      }
+      const payload = { username: user.username, sub: user.id };
+      return {
+        access_token: this.jwtService.sign(payload),
+        //expires_in: "1d",
+      };
+    } catch (e) {
+      handleErrorLog(e);
     }
-    const payload = { username: user.username, sub: user.id };
-    return {
-      access_token: this.jwtService.sign(payload),
-      //expires_in: "1d",
-    };
   }
 
   async signup(user: UserDto): Promise<User | undefined> {
@@ -52,6 +64,7 @@ export class AuthService {
       return await this.jwtService.verifyAsync(token);
     } catch (e) {
       handleErrorLog(e);
+      throw new UnauthorizedException("Invalid token");
     }
   }
 }

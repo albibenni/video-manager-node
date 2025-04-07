@@ -7,7 +7,7 @@ import tseslint from "typescript-eslint";
 export default tseslint.config(
   {
     ignores: [
-      "eslint.config.js",
+      "eslint.config.mjs",
       "**/*.log",
       "**/.DS_Store",
       ".vscode/settings.json",
