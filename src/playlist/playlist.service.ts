@@ -55,8 +55,6 @@ export class PlaylistService {
     // Create and save each playlist
     for (const playlistData of samplePlaylists) {
       const playlist = await this.create(playlistData);
-      if (!playlist)
-        throw new Error(`Error creating playlist: ${playlistData.name}`);
       console.log(`Created playlist: ${playlist.name}`);
     }
 
@@ -68,9 +66,8 @@ export class PlaylistService {
       name: createPlaylistDto.name,
       description: createPlaylistDto.description,
     });
-    console.log("here");
 
-    if (createPlaylistDto.videos?.length) {
+    if (createPlaylistDto.videos.length > 0) {
       const videos = await Promise.all(
         createPlaylistDto.videos.map((video) =>
           this.videoService.findOne(video.id),
@@ -148,10 +145,6 @@ export class PlaylistService {
     const playlist = await this.findByPlaylistName(playlistName);
     const video = await this.videoService.findByVideoTitle(videoTitle);
 
-    if (!playlist.videos) {
-      playlist.videos = [];
-    }
-
     playlist.videos.push(video);
     return this.playlistRepository.save(playlist);
   }
@@ -161,8 +154,7 @@ export class PlaylistService {
     videoTitle: string,
   ): Promise<Playlist> {
     const playlist = await this.findByPlaylistName(playlistName);
-    console.log(playlist);
-    if (playlist.videos?.length == 0) throw new Error("Videos not found");
+    if (playlist.videos.length == 0) throw new Error("Videos not found");
     playlist.videos = playlist.videos.filter(
       (video) => video.title !== videoTitle,
     );
