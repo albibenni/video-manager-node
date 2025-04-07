@@ -49,13 +49,13 @@ export class UserService {
   }
 
   async findByUsername(username: string): Promise<User> {
-    const [user] = await this.userRepository.find({ where: { username } });
+    const user = await this.userRepository.find({ where: { username } });
 
-    if (!user) {
+    if (user.length === 0) {
       throw new NotFoundException(`User with username ${username} not found`);
     }
 
-    return user;
+    return user[0];
   }
 
   // async validateUser(username: string, password: string): Promise<User | null> {
