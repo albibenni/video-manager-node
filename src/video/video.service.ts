@@ -2,7 +2,8 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Video } from "./entities/video.entity";
-import { VideoDto, videoToVideoDto } from "./dto/video.dto";
+import { VideoDto } from "./dto/video.dto";
+import { handleErrorLog } from "src/utils/utils";
 
 @Injectable()
 export class VideoService {
@@ -118,7 +119,7 @@ export class VideoService {
       take: 1,
       cache: true,
     });
-    if (!videos || videos.length === 0) {
+    if (videos.length === 0) {
       throw new NotFoundException(`Video with title ${title} not found`);
     }
     return videos[0];
@@ -133,8 +134,8 @@ export class VideoService {
     try {
       const video = this.videoRepository.create(createVideoDto);
       return this.videoRepository.save(video);
-    } catch (e: any) {
-      console.log(e.message);
+    } catch (e) {
+      handleErrorLog(e);
     }
   }
 
@@ -155,7 +156,7 @@ export class VideoService {
       Object.assign(video, updateVideoDto);
       return this.videoRepository.save(video);
     } catch (e: any) {
-      console.log(e.message);
+      handleErrorLog(e);
     }
   }
 
@@ -166,12 +167,12 @@ export class VideoService {
    * @throws NotFoundException - If the video with the given ID is not found
    * @returns A Promise that resolves when the video is successfully removed
    */
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<Video | undefined> {
     try {
       const video = await this.findOne(id);
-      if (video) await this.videoRepository.remove(video);
+      return await this.videoRepository.remove(video);
     } catch (e: any) {
-      console.log(e.message);
+      handleErrorLog(e);
     }
   }
 }

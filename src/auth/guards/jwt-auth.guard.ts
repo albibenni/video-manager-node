@@ -6,14 +6,23 @@ import {
 } from "@nestjs/common";
 import { AuthService } from "../auth.service";
 import { handleErrorLog } from "src/utils/utils";
+import { Request } from "express";
+
+interface JwtPayload {
+  username: string;
+  sub: string;
+}
+
+interface RequestWithUser extends Request {
+  user: JwtPayload;
+}
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(private authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<RequestWithUser>();
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
@@ -21,22 +30,17 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const payload = await this.authService.verifyToken(token);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      const payload = (await this.authService.verifyToken(token)) as JwtPayload;
       request.user = payload;
       return true;
     } catch (e) {
-      // throw new UnauthorizedException("Invalid token");
       handleErrorLog(e);
       return false;
     }
   }
 
-  private extractTokenFromHeader(request: any): string | undefined {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+  private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(" ") ?? [];
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return type === "Bearer" ? token : undefined;
   }
 }

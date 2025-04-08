@@ -35,18 +35,12 @@ export class VideoController {
   @Get(":id")
   async findOne(@Param("id") id: string): Promise<VideoDto> {
     const video = await this.videoService.findOne(id);
-    if (!video) {
-      throw new Error("Video not found");
-    }
     return videoToVideoDto(video);
   }
 
   @Get("video/:title")
   async findOneByTitle(@Param("title") title: string): Promise<VideoDto> {
     const video = await this.videoService.findByVideoTitle(title);
-    if (!video) {
-      throw new Error("Video not found");
-    }
     return videoToVideoDto(video);
   }
 

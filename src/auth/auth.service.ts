@@ -37,7 +37,6 @@ export class AuthService {
       const payload = { username: user.username, sub: user.id };
       return {
         access_token: this.jwtService.sign(payload),
-        //expires_in: "1d",
       };
     } catch (e) {
       handleErrorLog(e);
