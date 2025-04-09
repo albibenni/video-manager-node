@@ -5,7 +5,6 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { AuthService } from "../auth.service";
-import { handleErrorLog } from "src/utils/utils";
 import { Request } from "express";
 
 interface JwtPayload {
@@ -32,11 +31,10 @@ export class JwtAuthGuard implements CanActivate {
     try {
       const payload = (await this.authService.verifyToken(token)) as JwtPayload;
       request.user = payload;
-      return true;
-    } catch (e) {
-      handleErrorLog(e);
-      return false;
+    } catch {
+      throw new UnauthorizedException("No token provided");
     }
+    return true;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
