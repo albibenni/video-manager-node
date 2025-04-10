@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 
 export type JwtPayload = {
-  username: string;
   sub: string;
 };
 
