@@ -13,6 +13,7 @@ import { User } from "src/user/entities/user.entity";
 import { handleErrorLog } from "src/utils/utils";
 import refreshJwtConfig from "./config/refresh-jwt.config";
 import { ConfigType } from "@nestjs/config";
+import { JwtPayload } from "./guards/jwt-auth.guard";
 
 export type Tokens = {
   access_token: string;
@@ -44,7 +45,7 @@ export class AuthService {
         throw new BadRequestException("Wrong Credentials");
       }
       // could be just the sub user.id
-      const payload = { username: user.username, sub: user.id };
+      const payload: JwtPayload = { sub: user.id };
       return {
         access_token: this.jwtService.sign(payload),
         refresh_token: this.jwtService.sign(payload, this.refreshTokenConfig),
@@ -66,6 +67,13 @@ export class AuthService {
     } catch (e) {
       handleErrorLog(e);
     }
+  }
+
+  refreshToken(userId: string) {
+    const payload: JwtPayload = { sub: userId };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 
   async verifyToken(token: string) {
