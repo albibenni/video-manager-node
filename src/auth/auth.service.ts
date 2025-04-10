@@ -11,6 +11,10 @@ import { randomBytes, scrypt } from "crypto";
 import { User } from "src/user/entities/user.entity";
 import { handleErrorLog } from "src/utils/utils";
 
+export type Tokens = {
+  access_token: string;
+  refresh_token: string;
+};
 const scryptAsync = promisify(scrypt);
 @Injectable()
 export class AuthService {
@@ -22,7 +26,7 @@ export class AuthService {
   async signIn(
     username: string,
     password: string,
-  ): Promise<{ access_token: string } | undefined> {
+  ): Promise<Tokens | undefined> {
     try {
       const user = await this.userService.findByUsername(username);
       const [salt, storedHash] = user.password.split(".");
@@ -34,9 +38,11 @@ export class AuthService {
       if (storedHash !== inputPasswordHash.toString("hex")) {
         throw new BadRequestException("Wrong Credentials");
       }
+      // could be just the sub user.id
       const payload = { username: user.username, sub: user.id };
       return {
         access_token: this.jwtService.sign(payload),
+        refresh_token: this.jwtService.sign(payload),
       };
     } catch (e) {
       handleErrorLog(e);
