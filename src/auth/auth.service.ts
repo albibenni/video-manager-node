@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -10,6 +11,8 @@ import { promisify } from "util";
 import { randomBytes, scrypt } from "crypto";
 import { User } from "src/user/entities/user.entity";
 import { handleErrorLog } from "src/utils/utils";
+import refreshJwtConfig from "./config/refresh-jwt.config";
+import { ConfigType } from "@nestjs/config";
 
 export type Tokens = {
   access_token: string;
@@ -21,6 +24,8 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
+    @Inject(refreshJwtConfig.KEY)
+    private refreshTokenConfig: ConfigType<typeof refreshJwtConfig>,
   ) {}
 
   async signIn(
@@ -42,7 +47,7 @@ export class AuthService {
       const payload = { username: user.username, sub: user.id };
       return {
         access_token: this.jwtService.sign(payload),
-        refresh_token: this.jwtService.sign(payload),
+        refresh_token: this.jwtService.sign(payload, this.refreshTokenConfig),
       };
     } catch (e) {
       handleErrorLog(e);
