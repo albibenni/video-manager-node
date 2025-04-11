@@ -2,9 +2,15 @@ import { Controller, Post, Request, UseGuards } from "@nestjs/common";
 import { AuthService } from "src/auth/auth.service";
 import { Req } from "@nestjs/common";
 import { RefreshAuthGuard } from "./guards/refresh-auth.guard";
+import { Role } from "src/user/enums/role.enum";
+
+export type UserIdAndRole = {
+  id: string;
+  role: Role;
+};
 
 export interface RequestWithUser extends Request {
-  user: { id: string };
+  user: UserIdAndRole;
 }
 
 @Controller("auth")

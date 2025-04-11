@@ -30,9 +30,7 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find({
-      select: ["id", "username", "email", "isActive", "createdAt", "updatedAt"],
-    });
+    return this.userRepository.find();
   }
 
   async findOne(id: string): Promise<User> {
@@ -77,8 +75,8 @@ export class UserService {
   //   return null;
   // }
 
-  async remove(id: string): Promise<void> {
-    const user = await this.findOne(id);
+  async remove(username: string): Promise<void> {
+    const user = await this.findByUsername(username);
     await this.userRepository.remove(user);
   }
 }

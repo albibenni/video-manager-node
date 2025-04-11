@@ -14,6 +14,7 @@ import { handleErrorLog } from "src/utils/utils";
 import refreshJwtConfig from "./config/refresh-jwt.config";
 import { ConfigType } from "@nestjs/config";
 import { JwtPayload } from "./guards/jwt-auth.guard";
+import { UserIdAndRole } from "./auth.controller";
 
 export type Tokens = {
   access_token: string;
@@ -132,8 +133,6 @@ export class AuthService {
       (await scryptAsync(refreshToken, salt, 64)) as Buffer
     ).toString("hex");
 
-    console.log("128 aaaaaaaaa", storedHash === inputRefreshToken);
-
     if (storedHash !== inputRefreshToken) {
       throw new UnauthorizedException("Invalid refresh token");
     }
@@ -142,5 +141,13 @@ export class AuthService {
 
   async signout(userId: string) {
     await this.userService.updateRefreshToken(userId, "");
+  }
+
+  async validateJwtUser(userId: string) {
+    const user = await this.userService.findOne(userId);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!user) throw new UnauthorizedException("User not found!");
+    const curUser: UserIdAndRole = { id: user.id, role: user.role };
+    return curUser;
   }
 }

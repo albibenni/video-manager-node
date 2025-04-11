@@ -15,6 +15,8 @@ import { AuthService } from "src/auth/auth.service";
 import { RequestWithUser } from "src/auth/auth.controller";
 import { Role } from "./enums/role.enum";
 import { Roles } from "src/auth/decoretors/roles.decorator";
+import { User } from "./entities/user.entity";
+import { RolesGuard } from "src/auth/roles/roles.guard";
 
 @Controller("users")
 export class UserController {
@@ -53,9 +55,10 @@ export class UserController {
 
   //@SetMetadata("role", [Role.ADMIN])
   @Roles(Role.ADMIN, Role.EDITOR)
+  @UseGuards(RolesGuard)
   @UseGuards(JwtAuthGuard)
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.userService.remove(id);
+  @Delete(":username")
+  remove(@Body() body: Pick<User, "username">) {
+    return this.userService.remove(body.username);
   }
 }
