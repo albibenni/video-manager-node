@@ -62,19 +62,6 @@ export class UserService {
     return user[0];
   }
 
-  // async validateUser(username: string, password: string): Promise<User | null> {
-  //   const user = await this.userRepository.findOne({
-  //     where: { username },
-  //     select: ["id", "username", "password", "email", "isActive"],
-  //   });
-
-  //   if (user && (await compare(password, user.password))) {
-  //     return user;
-  //   }
-
-  //   return null;
-  // }
-
   async remove(username: string): Promise<void> {
     const user = await this.findByUsername(username);
     await this.userRepository.remove(user);

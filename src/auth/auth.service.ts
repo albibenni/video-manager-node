@@ -143,7 +143,7 @@ export class AuthService {
     await this.userService.updateRefreshToken(userId, "");
   }
 
-  async validateJwtUser(userId: string) {
+  async validateJwtUser(userId: string): Promise<UserIdAndRole> {
     const user = await this.userService.findOne(userId);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!user) throw new UnauthorizedException("User not found!");

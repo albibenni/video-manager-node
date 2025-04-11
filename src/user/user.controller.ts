@@ -55,7 +55,7 @@ export class UserController {
 
   //@SetMetadata("role", [Role.ADMIN])
   @Roles(Role.ADMIN, Role.EDITOR)
-  @UseGuards(RolesGuard)
+  @UseGuards(RolesGuard) //order is important
   @UseGuards(JwtAuthGuard)
   @Delete(":username")
   remove(@Body() body: Pick<User, "username">) {
