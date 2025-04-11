@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "compose": "docker compose down && docker compose up -d",
     "indent:check": "prettier . --check",
     "indent:write": "prettier . --write",
     "build": "nest build",
