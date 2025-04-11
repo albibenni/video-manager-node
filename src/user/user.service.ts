@@ -48,6 +48,13 @@ export class UserService {
     return user;
   }
 
+  async updateRefreshToken(refreshToken: string, userId: string) {
+    return await this.userRepository.update(
+      { id: userId },
+      { hashedRefreshToken: refreshToken },
+    );
+  }
+
   async findByUsername(username: string): Promise<User> {
     const user = await this.userRepository.find({ where: { username } });
 

@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "src/user/user.service";
-import { UserDto } from "src/user/dto/create-user.dto";
+import { CreateUser, UserDto } from "src/user/dto/create-user.dto";
 import { promisify } from "util";
 import { randomBytes, scrypt } from "crypto";
 import { User } from "src/user/entities/user.entity";
@@ -45,23 +45,48 @@ export class AuthService {
         throw new BadRequestException("Wrong Credentials");
       }
       // could be just the sub user.id
-      const payload: JwtPayload = { sub: user.id };
+      // const payload: JwtPayload = { sub: user.id };
+      // const refreshToken = this.jwtService.sign(
+      //   payload,
+      //   this.refreshTokenConfig,
+      // );
+      const { access_token, refresh_token } = await this.generateTokens(
+        user.id,
+      );
+      const refresh_salt = randomBytes(9).toString("hex");
+      const refreshTokenHash = (
+        (await scryptAsync(refresh_token, refresh_salt, 64)) as Buffer
+      ).toString("hex");
+      await this.userService.updateRefreshToken(refreshTokenHash, user.id);
       return {
-        access_token: this.jwtService.sign(payload),
-        refresh_token: this.jwtService.sign(payload, this.refreshTokenConfig),
+        access_token,
+        refresh_token,
       };
     } catch (e) {
       handleErrorLog(e);
     }
   }
 
+  private async generateTokens(userId: string): Promise<Tokens> {
+    const payload: JwtPayload = { sub: userId };
+    const [access_token, refresh_token] = await Promise.all([
+      this.jwtService.signAsync(payload),
+      this.jwtService.signAsync(payload, this.refreshTokenConfig),
+    ]);
+    return {
+      access_token,
+      refresh_token,
+    };
+  }
+
   async signup(user: UserDto): Promise<User | undefined> {
     try {
       const salt = randomBytes(9).toString("hex");
       const buffHash = (await scryptAsync(user.password, salt, 64)) as Buffer;
-      const newUser = {
+      const newUser: CreateUser = {
         ...user,
         password: `${salt}.${buffHash.toString("hex")}`,
+        hashedRefreshToken: "",
       };
       return await this.userService.create(newUser);
     } catch (e) {
