@@ -57,7 +57,10 @@ export class AuthService {
       const refreshTokenHash = (
         (await scryptAsync(refresh_token, refresh_salt, 64)) as Buffer
       ).toString("hex");
-      await this.userService.updateRefreshToken(refreshTokenHash, user.id);
+      await this.userService.updateRefreshToken(
+        `${refresh_salt}.${refreshTokenHash}`,
+        user.id,
+      );
       return {
         access_token,
         refresh_token,
@@ -109,5 +112,28 @@ export class AuthService {
       handleErrorLog(e);
       throw new UnauthorizedException("Invalid token");
     }
+  }
+
+  async validateRefreshToken(
+    userId: string,
+    refreshToken: string,
+  ): Promise<{ id: string }> {
+    const user = await this.userService.findOne(userId);
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!user || !user.hashedRefreshToken) {
+      throw new UnauthorizedException("Invalid refresh token");
+    }
+    const [salt, storedHash] = user.hashedRefreshToken.split(".");
+    const inputRefreshToken = (
+      (await scryptAsync(refreshToken, salt, 64)) as Buffer
+    ).toString("hex");
+
+    console.log("128 aaaaaaaaa", storedHash === inputRefreshToken);
+
+    if (storedHash !== inputRefreshToken) {
+      throw new UnauthorizedException("Invalid refresh token");
+    }
+    return { id: userId };
   }
 }
