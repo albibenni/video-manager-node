@@ -3,7 +3,7 @@ import { AuthService } from "src/auth/auth.service";
 import { Req } from "@nestjs/common";
 import { RefreshAuthGuard } from "./guards/refresh-auth.guard";
 
-interface RequestWithUser extends Request {
+export interface RequestWithUser extends Request {
   user: { id: string };
 }
 

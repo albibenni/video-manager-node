@@ -44,12 +44,6 @@ export class AuthService {
       if (storedHash !== inputPasswordHash.toString("hex")) {
         throw new BadRequestException("Wrong Credentials");
       }
-      // could be just the sub user.id
-      // const payload: JwtPayload = { sub: user.id };
-      // const refreshToken = this.jwtService.sign(
-      //   payload,
-      //   this.refreshTokenConfig,
-      // );
       const { access_token, refresh_token } = await this.generateTokens(
         user.id,
       );
@@ -97,10 +91,19 @@ export class AuthService {
     }
   }
 
-  refreshToken(userId: string) {
-    const payload: JwtPayload = { sub: userId };
+  async refreshToken(userId: string): Promise<Tokens> {
+    const { access_token, refresh_token } = await this.generateTokens(userId);
+    const refresh_salt = randomBytes(9).toString("hex");
+    const refreshTokenHash = (
+      (await scryptAsync(refresh_token, refresh_salt, 64)) as Buffer
+    ).toString("hex");
+    await this.userService.updateRefreshToken(
+      `${refresh_salt}.${refreshTokenHash}`,
+      userId,
+    );
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token,
+      refresh_token,
     };
   }
 
@@ -135,5 +138,9 @@ export class AuthService {
       throw new UnauthorizedException("Invalid refresh token");
     }
     return { id: userId };
+  }
+
+  async signout(userId: string) {
+    await this.userService.updateRefreshToken(userId, "");
   }
 }

@@ -6,11 +6,13 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { UserDto } from "./dto/create-user.dto";
 import { AuthService } from "src/auth/auth.service";
+import { RequestWithUser } from "src/auth/auth.controller";
 
 @Controller("users")
 export class UserController {
@@ -27,6 +29,12 @@ export class UserController {
   @Post("signin")
   signin(@Body() body: Pick<UserDto, "username" | "password">) {
     return this.authService.signIn(body.username, body.password);
+  }
+
+  @Post("signout")
+  @UseGuards(JwtAuthGuard)
+  signout(@Req() req: RequestWithUser) {
+    return this.authService.signout(req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)
