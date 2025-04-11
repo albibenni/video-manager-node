@@ -13,6 +13,8 @@ import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { UserDto } from "./dto/create-user.dto";
 import { AuthService } from "src/auth/auth.service";
 import { RequestWithUser } from "src/auth/auth.controller";
+import { Role } from "./enums/role.enum";
+import { Roles } from "src/auth/decoretors/roles.decorator";
 
 @Controller("users")
 export class UserController {
@@ -49,6 +51,8 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
+  //@SetMetadata("role", [Role.ADMIN])
+  @Roles(Role.ADMIN, Role.EDITOR)
   @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@Param("id") id: string) {
